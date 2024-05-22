@@ -47,9 +47,6 @@ jobs:
   generate-github-attestation:
     name: Generate GitHub Attestation
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      attestations: write
     steps:
       - name: Generate GitHub Attestation
         id: generate-github-attest
