@@ -1,0 +1,62 @@
+name: GitHub Attestation workflow
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  workflow_call:
+    inputs:
+      subject-path:
+        description: >
+          Path to the artifact for which provenance will be generated. Must specify
+          exactly one of "subject-path" or "subject-digest".
+        required: false
+        type: string
+      subject-digest:
+        description: >
+          Digest of the subject for which provenance will be generated. Must be in
+          the form "algorithm:hex_digest" (e.g. "sha256:abc123..."). Must specify
+          exactly one of "subject-path" or "subject-digest".
+        required: false
+        type: string
+      subject-name:
+        description: >
+          Subject name as it should appear in the provenance statement. Required
+          unless "subject-path" is specified, in which case it will be inferred from
+          the path.
+        type: string
+      push-to-registry:
+        description: >
+          Whether to push the provenance statement to the image registry. Requires
+          that the "subject-name" parameter specify the fully-qualified image name
+          and that the "subject-digest" parameter be specified. Defaults to false.
+        default: false
+        required: false
+        type: boolean
+      github-token:
+        description: >
+          The GitHub token used to make authenticated API requests.
+        default: ${{ github.token }}
+        required: false
+        type: string
+
+jobs:
+  generate-github-attestation:
+    name: Generate GitHub Attestation
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+      - name: Generate GitHub Attestation
+        id: generate-github-attest
+        uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940  # actions/attest-build-provenance@v1.0.0
+        with:
+          subject-path: ${{ inputs.subject-path }}
+          subject-digest: ${{ inputs.subject-digest }}
+          subject-name: ${{ inputs.subject-name }}
+          push-to-registry: ${{ inputs.push-to-registry }}
+          github-token: ${{ inputs.github-token }}
