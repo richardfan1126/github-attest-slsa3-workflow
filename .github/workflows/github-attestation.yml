@@ -36,11 +36,12 @@ on:
         default: false
         required: false
         type: boolean
-    secrets:
       github-token:
         description: >
           The GitHub token used to make authenticated API requests.
-        required: true
+        default: ${{ github.token }}
+        required: false
+        type: string
 
 jobs:
   generate-github-attestation:
@@ -51,7 +52,7 @@ jobs:
       id-token: write
       attestations: write
     env:
-      GITHUB_TOKEN: ${{ secrets.github-token }}
+      GITHUB_TOKEN: ${{ inputs.github-token }}
     steps:
       - name: Generate GitHub Attestation
         id: generate-github-attest
@@ -61,4 +62,4 @@ jobs:
           subject-digest: ${{ inputs.subject-digest }}
           subject-name: ${{ inputs.subject-name }}
           push-to-registry: ${{ inputs.push-to-registry }}
-          github-token: ${{ secrets.github-token }}
+          github-token: ${{ inputs.github-token }}
