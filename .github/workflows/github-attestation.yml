@@ -50,6 +50,8 @@ jobs:
       packages: write
       id-token: write
       attestations: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.github-token }}
     steps:
       - name: Generate GitHub Attestation
         id: generate-github-attest
