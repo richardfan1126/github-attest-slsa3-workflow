@@ -46,6 +46,12 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Log into ghcr.io
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d  # docker/login-action@v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - name: Generate GitHub Attestation
         id: generate-github-attest
         uses: actions/attest-build-provenance@bdd51370e0416ac948727f861e03c2f05d32d78e  # actions/attest-build-provenance@v1.3.2
